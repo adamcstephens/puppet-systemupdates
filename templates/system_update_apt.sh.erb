@@ -1,0 +1,111 @@
+#!/bin/bash
+#
+# system_update_apt.sh
+#
+# System Update script for apt-based systems
+#
+
+export PATH="/bin:/sbin:/usr/bin:/usr/sbin"
+
+unset DISPLAY
+unset SSH_CONNECTION
+unset REMOTE_HOST
+
+# quiet output by default
+APTARGS='-qq'
+DEBIAN_FRONTEND='noninteractive'
+DEBIAN_PRIORITY='critical'
+
+# disable reboot by default, re-enable with arguments
+REBOOT='false'
+
+while getopts acuv name
+do
+ case $name in
+   c) cflag=1
+      REBOOT='true'
+      if [[ $uflag -eq 1 ]]
+      then
+        print_usage
+      fi
+      ;;
+   u) uflag=1
+      if [[ $cflag -eq 1 ]]
+      then
+        print_usage
+      fi
+      ;;
+   a) aflag=1
+      REBOOT='true'
+      ;;
+   v)
+      APTARGS=''
+      unset $DEBIAN_FRONTEND
+      unset DEBIAN_PRIORITY
+      ;;
+   ? ) print_usage;;
+ esac
+done
+
+check_reboot() {
+  [ -e /var/run/reboot-required ] && shutdown -r now && exit 0
+  <% if defined?(@pkgtosvcrestart)  then -%>
+  do_pkgtosvc_restart
+  <% end -%>
+}
+
+<% if defined?(@pkgtosvcrestart)  then -%>
+do_pkgtosvc_restart() {
+<% pkgtosvcrestart.each do |package, service| -%>
+  if grep `date +'%Y-%m-%d'` /var/log/dpkg.log | egrep ' (upgrade|install) ' | grep <%= package %>
+  then
+    /usr/sbin/service <%= service -%> restart
+  fi
+<% end -%>
+}
+<% end -%>
+
+do_update() {
+  if [ -e /usr/bin/apt-get ]
+  then
+    APTARGS="$APTARGS -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew"
+    apt-get $APTARGS update
+    apt-get -y $APTARGS upgrade
+    apt-get -y $APTARGS dist-upgrade puppet
+    apt-get -y $APTARGS dist-upgrade
+    apt-get -y $APTARGS -f install
+    apt-get -y $APTARGS autoremove
+
+    # clean up downloaded files to save space
+    apt-get -y clean
+  else
+    echo "No Debian update executables found!!"
+  fi
+
+  <% if defined?(@pkgtosvcrestart)  then -%>
+  [[ "$REBOOT" == 'false' ]] && do_pkgtosvc_restart
+  <% end -%>
+}
+
+print_usage() {
+  echo "Usage: system_update.sh [-v] (-a | -c | -u )
+    -a do system update (update, check)
+    -c check if reboot is necessary and reboot if true
+    -u do updates
+    -v verbose (default is only error output)"
+  exit
+}
+
+if [[ $aflag -eq 1 ]]
+then
+  do_update
+  check_reboot
+elif [[ $cflag -eq 1 ]]
+then
+  check_reboot
+elif [[ $uflag -eq 1 ]]
+then
+  do_update
+else
+  print_usage
+fi

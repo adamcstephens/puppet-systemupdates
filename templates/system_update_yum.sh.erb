@@ -1,0 +1,144 @@
+#!/bin/bash
+#
+# system_update_yum.sh
+#
+# System Update script for yum-based systems
+#
+
+export PATH="/bin:/sbin:/usr/bin:/usr/sbin"
+
+unset DISPLAY
+unset SSH_CONNECTION
+unset REMOTE_HOST
+
+YUMARGS="-y -d 0 -e 0"
+REBOOT='false'
+
+while getopts acuv name
+do
+ case $name in
+   c) cflag=1
+      REBOOT='true'
+      if [[ $uflag -eq 1 ]]
+      then
+        print_usage
+      fi
+      ;;
+   u) uflag=1
+      if [[ $cflag -eq 1 ]]
+      then
+        print_usage
+      fi
+      ;;
+   a) aflag=1
+      REBOOT='true'
+      ;;
+   v)
+      YUMARGS='-y'
+      ;;
+   ? ) print_usage;;
+ esac
+done
+
+check_kernel() {
+  if rpm -q kernel > /dev/null
+  then
+    kernelpkg="kernel"
+  elif rpm -q kernel-PAE > /dev/null
+  then
+    kernelpkg="kernel-PAE"
+  fi
+  UNAME=`uname -r | awk -F\- '{print $2}' | sed 's/EL//g;s/el5//g;s/smp//g;s/PAE//g'`
+  CURMAJ=`echo $UNAME | cut -f1 -d.`
+  CURMIN=`echo $UNAME | cut -f2 -d.`
+  CURSUB=`echo $UNAME | cut -f3 -d.`
+  doreboot=false
+  for kern in `rpm -q --queryformat="%{version}-%{release}\n" $kernelpkg | awk -F\- '{print $2}' | sed 's/EL//g;s/el5//g;s/smp//g;s/PAE//g'`
+  do
+    KERNMAJ=`echo $kern | cut -f1 -d.`
+    KERNMIN=`echo $kern | cut -f2 -d.`
+    KERNSUB=`echo $kern | cut -f3 -d.`
+    if [[ "$KERNMAJ" -gt "$CURMAJ" ]]
+    then
+      echo "Kernel Update: $kern > $UNAME"
+      doreboot=true
+    elif [[ "$KERNMAJ" -eq "$CURMAJ" ]]
+    then
+      if [[ "$KERNMIN" -gt "$CURMIN" ]]
+      then
+        echo "Kernel Update: $kern > $UNAME"
+        doreboot=true
+      elif [[ "$KERNMIN" -eq "$CURMIN" ]]
+      then
+        if [[ "$KERNSUB" -gt "$CURSUB" ]]
+        then
+          echo "Kernel Update: $kern > $UNAME"
+          doreboot=true
+        fi
+      fi
+    fi
+  done
+
+  if $doreboot
+  then
+    echo "Rebooting."
+    shutdown -r now
+<% if defined?(@pkgtosvcrestart)  then -%>
+  else
+    do_pkgtosvc_restart
+<% end -%>
+  fi
+}
+
+<% if defined?(@pkgtosvcrestart)  then -%>
+do_pkgtosvc_restart() {
+<% @pkgtosvcrestart.each do |package, service| -%>
+  if grep "`date +'%b %d'`" /var/log/yum.log | grep <%= package %>
+  then
+    /sbin/service <%= service -%> restart
+  fi
+<% end -%>
+}
+<% end -%>
+
+do_update() {
+  if [ -e /usr/bin/yum ]
+  then
+    yum $YUMARGS clean all
+    yum $YUMARGS update yum
+    yum $YUMARGS update glibc
+    yum $YUMARGS update
+    <% if @virtual == 'openvzhn'  then -%>
+      yum $YUMARGS --disableexcludes=all update kernel-headers
+    <% end -%>
+  else
+    echo "No RedHat update executables found!!"
+  fi
+
+  <% if defined?(@pkgtosvcrestart)  then -%>
+  [[ "$REBOOT" == 'false' ]] && do_pkgtosvc_restart
+  <% end -%>
+}
+
+print_usage() {
+  echo "Usage: system_update.sh [-v] (-a | -c | -u )
+    -a do system update (update, kernel)
+    -c check kernel update and reboot if there is a newer kernel
+    -u do updates
+    -v verbose (default is only error output)"
+  exit
+}
+
+if [[ $aflag -eq 1 ]]
+then
+  do_update
+  check_kernel
+elif [[ $cflag -eq 1 ]]
+then
+  check_kernel
+elif [[ $uflag -eq 1 ]]
+then
+  do_update
+else
+  print_usage
+fi
