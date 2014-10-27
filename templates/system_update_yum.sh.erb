@@ -95,7 +95,13 @@ do_pkgtosvc_restart() {
 <% @pkgtosvcrestart.each do |package, service| -%>
   if grep "`date +'%b %d'`" /var/log/yum.log | grep <%= package %>
   then
+<% if service.kind_of?(Array)
+         service.each do |svc| -%>
+    /sbin/service <%= svc -%> restart
+<%   end
+   else -%>
     /sbin/service <%= service -%> restart
+<% end -%>
   fi
 <% end -%>
 }
@@ -104,7 +110,7 @@ do_pkgtosvc_restart() {
 do_update() {
   if [ -e /usr/bin/yum ]
   then
-    yum $YUMARGS clean all
+    yum $YUMARGS clean expire-cache
     yum $YUMARGS update yum
     yum $YUMARGS update glibc
     yum $YUMARGS update
