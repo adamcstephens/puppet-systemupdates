@@ -1,0 +1,50 @@
+check_reboot() {
+  if rpm -q kernel > /dev/null
+  then
+    kernelpkg="kernel"
+  elif rpm -q kernel-PAE > /dev/null
+  then
+    kernelpkg="kernel-PAE"
+  fi
+  UNAME=`uname -r | awk -F\- '{print $2}' | sed 's/EL//g;s/el5//g;s/smp//g;s/PAE//g'`
+  CURMAJ=`echo $UNAME | cut -f1 -d.`
+  CURMIN=`echo $UNAME | cut -f2 -d.`
+  CURSUB=`echo $UNAME | cut -f3 -d.`
+  doreboot=false
+  for kern in `rpm -q --queryformat="%{version}-%{release}\n" $kernelpkg | awk -F\- '{print $2}' | sed 's/EL//g;s/el5//g;s/smp//g;s/PAE//g'`
+  do
+    KERNMAJ=`echo $kern | cut -f1 -d.`
+    KERNMIN=`echo $kern | cut -f2 -d.`
+    KERNSUB=`echo $kern | cut -f3 -d.`
+    if [[ "$KERNMAJ" -gt "$CURMAJ" ]]
+    then
+      echo "Kernel Update: $kern > $UNAME"
+      doreboot=true
+    elif [[ "$KERNMAJ" -eq "$CURMAJ" ]]
+    then
+      if [[ "$KERNMIN" -gt "$CURMIN" ]]
+      then
+        echo "Kernel Update: $kern > $UNAME"
+        doreboot=true
+      elif [[ "$KERNMIN" -eq "$CURMIN" ]]
+      then
+        if [[ "$KERNSUB" -gt "$CURSUB" ]]
+        then
+          echo "Kernel Update: $kern > $UNAME"
+          doreboot=true
+        fi
+      fi
+    fi
+  done
+
+  if $doreboot
+  then
+    echo "Rebooting."
+    shutdown -r now
+<% if defined?(@pkgtosvcrestart)  then -%>
+  else
+    do_pkgtosvc_restart
+<% end -%>
+  fi
+}
+

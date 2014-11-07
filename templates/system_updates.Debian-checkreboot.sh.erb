@@ -1,0 +1,7 @@
+check_reboot() {
+  [ -e /var/run/reboot-required ] && shutdown -r now && exit 0
+  <% if defined?(@pkgtosvcrestart)  then -%>
+  do_pkgtosvc_restart
+  <% end -%>
+}
+

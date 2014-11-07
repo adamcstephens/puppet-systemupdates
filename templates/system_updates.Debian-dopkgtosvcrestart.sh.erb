@@ -1,0 +1,17 @@
+<% if defined?(@pkgtosvcrestart)  then -%>
+do_pkgtosvc_restart() {
+<% @pkgtosvcrestart.each do |package, service| -%>
+  if grep `date +'%Y-%m-%d'` /var/log/dpkg.log | egrep ' (upgrade|install) ' | grep <%= package %>
+  then
+<% if service.kind_of?(Array)
+         service.each do |svc| -%>
+    /usr/sbin/service <%= svc -%> restart
+<%   end
+   else -%>
+    /usr/sbin/service <%= service -%> restart
+<% end -%>
+  fi
+<% end -%>
+}
+<% end -%>
+

@@ -1,0 +1,17 @@
+<% if defined?(@pkgtosvcrestart)  then -%>
+do_pkgtosvc_restart() {
+<% @pkgtosvcrestart.each do |package, service| -%>
+  if grep "`date +'%b %d'`" /var/log/yum.log | grep <%= package %>
+  then
+<% if service.kind_of?(Array)
+         service.each do |svc| -%>
+    /sbin/service <%= svc -%> restart
+<%   end
+   else -%>
+    /sbin/service <%= service -%> restart
+<% end -%>
+  fi
+<% end -%>
+}
+<% end -%>
+

@@ -1,0 +1,15 @@
+{
+  "name": "adamcstephens-systemupdates",
+  "version": "0.2.0",
+  "author": "adamcstephens",
+  "summary": "Manage automated system updates",
+  "license": "Apache 2.0",
+  "source": "https://github.com/adamcstephens/puppet-systemupdates.git",
+  "project_page": "https://github.com/adamcstephens/puppet-systemupdates",
+  "issues_url": "https://github.com/adamcstephens/puppet-systemupdates/issues",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"},
+    {"name":"puppetlabs-concat","version_requirement":">= 1.1.2"}
+  ]
+}
+
