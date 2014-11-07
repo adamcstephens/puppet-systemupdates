@@ -1,10 +1,10 @@
 if [[ $aflag -eq 1 ]]
 then
   do_update
-  check_kernel
+  check_reboot
 elif [[ $cflag -eq 1 ]]
 then
-  check_kernel
+  check_reboot
 elif [[ $uflag -eq 1 ]]
 then
   do_update
