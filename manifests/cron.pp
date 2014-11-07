@@ -20,7 +20,7 @@ class systemupdates::cron inherits systemupdates {
 
   file { '/etc/cron.daily/system_update':
     ensure  => $cron_daily_ensure,
-    content => "#!/usr/bin/env bash\n${update_cmd}\n",
+    content => "#!/usr/bin/env bash\n# Puppet managed system update script\n${update_cmd}\n",
     owner   => 'root',
     group   => 'root',
     mode    => '0555',
