@@ -56,7 +56,7 @@ check_reboot() {
 
 <% if defined?(@pkgtosvcrestart)  then -%>
 do_pkgtosvc_restart() {
-<% pkgtosvcrestart.each do |package, service| -%>
+<% @pkgtosvcrestart.each do |package, service| -%>
   if grep `date +'%Y-%m-%d'` /var/log/dpkg.log | egrep ' (upgrade|install) ' | grep <%= package %>
   then
 <% if service.kind_of?(Array)
