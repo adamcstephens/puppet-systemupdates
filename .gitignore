@@ -1,0 +1,4 @@
+# generated files
+/pkg
+# vim temp files
+*.swp
