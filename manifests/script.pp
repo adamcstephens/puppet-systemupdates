@@ -12,6 +12,12 @@ class systemupdates::script inherits systemupdates {
     order  => '01',
   }
 
+  concat::fragment { 'system_updates_executetask':
+    target => '/usr/local/sbin/system_update.sh',
+    source => 'puppet:///modules/systemupdates/system_updates.execute_task.sh',
+    order  => '05',
+  }
+
   concat::fragment { 'system_updates_header_OS':
     target => '/usr/local/sbin/system_update.sh',
     source => "puppet:///modules/systemupdates/system_updates.header.${::osfamily}.sh",

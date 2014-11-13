@@ -1,19 +1,20 @@
 do_update() {
   if [ -e /usr/bin/yum ]
   then
-    yum $YUMARGS clean expire-cache
-    yum $YUMARGS update yum
-    yum $YUMARGS update glibc
-    yum $YUMARGS update
-    <% if @virtual == 'openvzhn'  then -%>
-      yum $YUMARGS --disableexcludes=all update kernel-headers
-    <% end -%>
+    execute_task yum $YUMARGS clean expire-cache
+    execute_task yum $YUMARGS update yum
+    execute_task yum $YUMARGS update glibc
+    execute_task yum $YUMARGS update
+<% if defined?(@custom_commands)  then -%>
+<% @custom_commands.each do |cmd| -%>
+    execute_task <%= cmd %>
+<% end -%>
+<% end %>
   else
     echo "No RedHat update executables found!!"
   fi
-
-  <% if defined?(@pkgtosvcrestart)  then -%>
+<% if defined?(@pkgtosvcrestart)  then -%>
   [[ "$REBOOT" == 'false' ]] && do_pkgtosvc_restart
-  <% end %>
+<% end %>
 }
 

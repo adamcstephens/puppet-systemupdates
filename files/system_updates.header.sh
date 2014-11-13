@@ -6,6 +6,7 @@
 #
 
 export PATH="/bin:/sbin:/usr/bin:/usr/sbin"
+export SYSTEM_UPDATE_LOG='/var/log/system_update.log'
 
 # unset some problematic environment variables
 unset DISPLAY

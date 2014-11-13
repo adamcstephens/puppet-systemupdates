@@ -8,6 +8,7 @@ class systemupdates (
   $use_cron_daily     = $::systemupdates::params::use_cron_daily,
   $disable_os_methods = false,
   $pkgtosvcrestart    = undef,
+  $custom_commands    = undef,
 ) inherits systemupdates::params {
   validate_string($day)
   validate_string($hour)
@@ -18,6 +19,9 @@ class systemupdates (
   validate_bool($disable_os_methods)
   if $pkgtosvcrestart {
     validate_hash($pkgtosvcrestart)
+  }
+  if $custom_commands {
+    validate_array($custom_commands)
   }
 
   anchor { '::systemupdates::begin': } ->

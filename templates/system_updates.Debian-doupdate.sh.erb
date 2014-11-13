@@ -2,21 +2,25 @@ do_update() {
   if [ -e /usr/bin/apt-get ]
   then
     APTARGS="$APTARGS -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew"
-    apt-get $APTARGS update
-    apt-get -y $APTARGS upgrade
-    apt-get -y $APTARGS dist-upgrade puppet
-    apt-get -y $APTARGS dist-upgrade
-    apt-get -y $APTARGS -f install
-    apt-get -y $APTARGS autoremove
-
+    execute_task apt-get $APTARGS update
+    execute_task apt-get -y $APTARGS upgrade
+    execute_task apt-get -y $APTARGS dist-upgrade puppet
+    execute_task apt-get -y $APTARGS dist-upgrade
+    execute_task apt-get -y $APTARGS -f install
+    execute_task apt-get -y $APTARGS autoremove
+<% if defined?(@custom_commands)  then -%>
+<% @custom_commands.each do |cmd| -%>
+    execute_task <%= cmd %>
+<% end -%>
+<% end %>
     # clean up downloaded files to save space
-    apt-get -y clean
+    execute_task apt-get -y clean
   else
     echo "No Debian update executables found!!"
   fi
 
-  <% if defined?(@pkgtosvcrestart)  then -%>
+<% if defined?(@pkgtosvcrestart)  then -%>
   [[ "$REBOOT" == 'false' ]] && do_pkgtosvc_restart
-  <% end %>
+<% end %>
 }
 
