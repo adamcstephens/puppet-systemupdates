@@ -10,6 +10,8 @@ The following distributions are known to be supported:
 * CentOS/RHEL 5-7
 * Ubuntu 14.04
 
+Please file an issue if you have successfully tested this on other apt/yum systems.
+
 # Usage
 
 Default update mechanism is once a week on Wed at 4am. These can be customized
