@@ -1,0 +1,7 @@
+/var/log/system_update.log {
+  missingok
+  notifempty
+  <%= @logrotate_freq %>
+  rotate <%= @logrotate_keep %>
+  create 0600 root root
+}

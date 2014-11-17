@@ -6,6 +6,8 @@ class systemupdates::params {
   $auto_reboot    = false
   $use_crontab    = true
   $use_cron_daily = false
+  $logrotate_freq = 'monthly'
+  $logrotate_keep = '12'
 
   case $::osfamily {
     'Redhat': {

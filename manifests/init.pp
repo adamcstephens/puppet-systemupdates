@@ -6,6 +6,8 @@ class systemupdates (
   $auto_reboot        = $::systemupdates::params::auto_reboot,
   $use_crontab        = $::systemupdates::params::use_crontab,
   $use_cron_daily     = $::systemupdates::params::use_cron_daily,
+  $logrotate_freq     = $::systemupdates::params::logrotate_freq,
+  $logrotate_keep     = $::systemupdates::params::logrotate_keep,
   $disable_os_methods = false,
   $pkgtosvcrestart    = undef,
   $custom_commands    = undef,
@@ -16,6 +18,8 @@ class systemupdates (
   validate_bool($auto_reboot)
   validate_bool($use_crontab)
   validate_bool($use_cron_daily)
+  validate_string($logrotate_freq)
+  validate_string($logrotate_keep)
   validate_bool($disable_os_methods)
   if $pkgtosvcrestart {
     validate_hash($pkgtosvcrestart)
@@ -27,6 +31,7 @@ class systemupdates (
   anchor { '::systemupdates::begin': } ->
   class { '::systemupdates::disable_os_methods': } ->
   class { '::systemupdates::packages': } ->
+  class { '::systemupdates::logrotate': } ->
   class { '::systemupdates::script': } ->
   class { '::systemupdates::cron': } ->
   anchor { '::systemupdates::end': }
