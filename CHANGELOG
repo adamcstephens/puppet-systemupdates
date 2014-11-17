@@ -1,0 +1,5 @@
+2014-11-17 - 0.2.1
+
+* Add logrotate configuration management
+* Basic documentation
+* Changelog
