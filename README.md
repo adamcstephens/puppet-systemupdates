@@ -9,6 +9,8 @@ Puppet module for configuring systems for automatic package updates. This module
 mechanism which utilizes distribution package managers, allowing for a consistent update experience
 across supported distributions.
 
+This module is designed to run from a cron task, and will only output on a failed return code from a task.
+
 The following distributions are known to be supported:
 
 * CentOS/RHEL 5-7
