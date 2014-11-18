@@ -21,7 +21,6 @@ class systemupdates (
     validate_re($use_anacron, '^(hourly|daily|weekly|monthly)$',
       "${use_anacron} must be one of hourly, daily, weekly or monthly")
   }
-  validate_bool($use_anacron)
   validate_string($logrotate_freq)
   validate_string($logrotate_keep)
   validate_bool($disable_os_methods)
