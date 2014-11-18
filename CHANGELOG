@@ -1,6 +1,6 @@
 2014-11-18 - 0.3.0
 
-* Change use_cron_daily to use_anacron (incompatible with <= 0.2.1)
+* Change use_cron_daily to use_anacron (incompatible with 0.2.1)
 * Fix disabling crontab entry
 * Debian: remove puppet and dangerous tasks. Use custom_commands if you want these back.
 * Add reference and more usage information
