@@ -6,10 +6,10 @@ class systemupdates::cron inherits systemupdates {
     $cron_ensure = false
   }
 
-  if $use_cron_daily == true {
-    $cron_daily_ensure = present
+  if $use_anacron != false {
+    $anacron_ensure = present
   } else {
-    $cron_daily_ensure = absent
+    $anacron_ensure = absent
   }
 
   if $auto_reboot == true {
@@ -18,8 +18,8 @@ class systemupdates::cron inherits systemupdates {
     $update_cmd = '/usr/local/sbin/system_update.sh -u'
   }
 
-  file { '/etc/cron.daily/system_update':
-    ensure  => $cron_daily_ensure,
+  file { "/etc/cron.${use_anacron}/system_update":
+    ensure  => $anacron_ensure,
     content => "#!/usr/bin/env bash\n# Puppet managed system update script\n${update_cmd}\n",
     owner   => 'root',
     group   => 'root',

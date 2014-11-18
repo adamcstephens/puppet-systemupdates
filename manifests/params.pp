@@ -5,7 +5,7 @@ class systemupdates::params {
   $minute         = fqdn_rand(59)
   $auto_reboot    = false
   $use_crontab    = true
-  $use_cron_daily = false
+  $use_anacron    = false
   $logrotate_freq = 'monthly'
   $logrotate_keep = '12'
 

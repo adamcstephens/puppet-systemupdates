@@ -5,7 +5,7 @@ class systemupdates (
   $minute             = $::systemupdates::params::minute,
   $auto_reboot        = $::systemupdates::params::auto_reboot,
   $use_crontab        = $::systemupdates::params::use_crontab,
-  $use_cron_daily     = $::systemupdates::params::use_cron_daily,
+  $use_anacron        = $::systemupdates::params::use_anacron,
   $logrotate_freq     = $::systemupdates::params::logrotate_freq,
   $logrotate_keep     = $::systemupdates::params::logrotate_keep,
   $disable_os_methods = false,
@@ -17,7 +17,11 @@ class systemupdates (
   validate_string($minute)
   validate_bool($auto_reboot)
   validate_bool($use_crontab)
-  validate_bool($use_cron_daily)
+  if $use_anacron != false {
+    validate_re($use_anacron, '^(hourly|daily|weekly|monthly)$',
+      "${use_anacron} must be one of hourly, daily, weekly or monthly")
+  }
+  validate_bool($use_anacron)
   validate_string($logrotate_freq)
   validate_string($logrotate_keep)
   validate_bool($disable_os_methods)
