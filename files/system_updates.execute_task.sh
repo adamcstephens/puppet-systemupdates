@@ -4,7 +4,7 @@ execute_task() {
   then
     TEMPLOG=$(mktemp)
     echo "$(date +"%b %d %H:%M:%S") Executing Task: ${@}" >$TEMPLOG
-    eval $@ &>>$TEMPLOG
+    eval $@ >>$TEMPLOG 2>&1
     TASKSTATUS=$?
   else
     echo "$(date +"%b %d %H:%M:%S") Executing Task: $@"
