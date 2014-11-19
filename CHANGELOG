@@ -1,3 +1,7 @@
+2014-11-19 - 0.3.1
+
+* Bug: older bash doesn't support &> redirection
+
 2014-11-18 - 0.3.0
 
 * Change use_cron_daily to use_anacron (incompatible with 0.2.1)
