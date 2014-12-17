@@ -1,5 +1,7 @@
 # puppet-systemupdates
 
+[![Puppet Forge](http://img.shields.io/puppetforge/v/adamcstephens/systemupdates.svg)](https://forge.puppetlabs.com/adamcstephens/systemupdates)
+
 #### Table of Contents
 
 1. [Usage](#usage)
