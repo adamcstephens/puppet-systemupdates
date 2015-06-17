@@ -1,17 +1,18 @@
 # class for managing automatic updates on systems
 class systemupdates (
-  $day                = $::systemupdates::params::day,
-  $hour               = $::systemupdates::params::hour,
-  $minute             = $::systemupdates::params::minute,
-  $auto_reboot        = $::systemupdates::params::auto_reboot,
-  $use_crontab        = $::systemupdates::params::use_crontab,
-  $use_anacron        = $::systemupdates::params::use_anacron,
-  $logrotate_freq     = $::systemupdates::params::logrotate_freq,
-  $logrotate_keep     = $::systemupdates::params::logrotate_keep,
-  $disable_os_methods = false,
-  $pkgtosvcrestart    = undef,
-  $custom_commands    = undef,
-  $pkgtosystemreboot  = [],
+  $day                 = $::systemupdates::params::day,
+  $hour                = $::systemupdates::params::hour,
+  $minute              = $::systemupdates::params::minute,
+  $auto_reboot         = $::systemupdates::params::auto_reboot,
+  $use_crontab         = $::systemupdates::params::use_crontab,
+  $use_anacron         = $::systemupdates::params::use_anacron,
+  $logrotate_freq      = $::systemupdates::params::logrotate_freq,
+  $logrotate_keep      = $::systemupdates::params::logrotate_keep,
+  $disable_os_methods  = false,
+  $pkgtosvcrestart     = undef,
+  $custom_commands     = undef,
+  $pkgtosystemreboot   = [],
+  $custom_pre_commands = [],
 ) inherits systemupdates::params {
   validate_string($day)
   validate_string($hour)
@@ -32,6 +33,7 @@ class systemupdates (
     validate_array($custom_commands)
   }
   validate_array($pkgtosystemreboot)
+  validate_array($custom_pre_commands)
 
   anchor { '::systemupdates::begin': } ->
   class { '::systemupdates::disable_os_methods': } ->

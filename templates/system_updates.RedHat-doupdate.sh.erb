@@ -1,4 +1,8 @@
 do_update() {
+<% @custom_pre_commands.each do |cmd| -%>
+  # custom pre commands
+  execute_task <%= cmd %>
+<% end -%>
   if [ -e /usr/bin/yum ]
   then
     execute_task yum $YUMARGS clean expire-cache

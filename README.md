@@ -121,7 +121,7 @@ Default: undef
 
 ###`custom_commands`
 
-Site specific commands which should be run during the upgrade process. See Hiera example above.
+Site specific commands which should be run *after* the upgrade process. See Hiera example above.
 
 Default: undef
 
@@ -131,7 +131,13 @@ Array of site specific packages which should trigger a system reboot. Currently 
 
 **NOTE** Only supports RPM-based systems, and keys off current date. Will reboot every time run during matching day.
 
-Defaults: empty
+Default: empty
+
+###`custom_pre_commands`
+
+Array of site specific commands which should be run *before* the upgrade process. Similar to custom_commands.
+
+Default: empty
 
 # Other
 
