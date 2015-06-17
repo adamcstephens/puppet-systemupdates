@@ -1,7 +1,7 @@
 <% if @pkgtosvcrestart.length > 0  then -%>
 do_pkgtosvc_restart() {
 <% @pkgtosvcrestart.each do |package, service| -%>
-  if grep "`date +'%b %d'`" /var/log/yum.log | grep <%= package %>
+  if rpm -qa --queryformat '%{installtime}(%{installtime:date}) %{name}\n' <%= package %> | grep -q "$(date +"%d %b %Y")"
   then
 <% if service.kind_of?(Array)
          service.each do |svc| -%>
