@@ -9,8 +9,8 @@ class systemupdates (
   $logrotate_freq      = $::systemupdates::params::logrotate_freq,
   $logrotate_keep      = $::systemupdates::params::logrotate_keep,
   $disable_os_methods  = false,
-  $pkgtosvcrestart     = undef,
-  $custom_commands     = undef,
+  $pkgtosvcrestart     = {},
+  $custom_commands     = [],
   $pkgtosystemreboot   = [],
   $custom_pre_commands = [],
 ) inherits systemupdates::params {
@@ -26,12 +26,8 @@ class systemupdates (
   validate_string($logrotate_freq)
   validate_string($logrotate_keep)
   validate_bool($disable_os_methods)
-  if $pkgtosvcrestart {
-    validate_hash($pkgtosvcrestart)
-  }
-  if $custom_commands {
-    validate_array($custom_commands)
-  }
+  validate_hash($pkgtosvcrestart)
+  validate_array($custom_commands)
   validate_array($pkgtosystemreboot)
   validate_array($custom_pre_commands)
 

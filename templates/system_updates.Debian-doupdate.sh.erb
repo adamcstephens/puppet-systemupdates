@@ -20,7 +20,7 @@ do_update() {
     echo "No Debian update executables found!!"
   fi
 
-<% if defined?(@pkgtosvcrestart)  then -%>
+<% if @pkgtosvcrestart.length > 0  then -%>
   [[ "$REBOOT" == 'false' ]] && do_pkgtosvc_restart
 <% end %>
 }

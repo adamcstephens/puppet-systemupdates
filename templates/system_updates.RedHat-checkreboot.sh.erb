@@ -57,7 +57,7 @@ check_reboot() {
   then
     echo "Rebooting."
     shutdown -r now
-<% if defined?(@pkgtosvcrestart)  then -%>
+<% if @pkgtosvcrestart.length > 0  then -%>
   else
     do_pkgtosvc_restart
 <% end -%>

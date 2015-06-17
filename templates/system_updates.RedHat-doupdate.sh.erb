@@ -1,6 +1,5 @@
 do_update() {
 <% @custom_pre_commands.each do |cmd| -%>
-  # custom pre commands
   execute_task <%= cmd %>
 <% end -%>
   if [ -e /usr/bin/yum ]
@@ -8,15 +7,13 @@ do_update() {
     execute_task yum $YUMARGS clean expire-cache
     execute_task yum $YUMARGS update yum
     execute_task yum $YUMARGS update
-<% if defined?(@custom_commands)  then -%>
 <% @custom_commands.each do |cmd| -%>
     execute_task <%= cmd %>
 <% end -%>
-<% end %>
   else
     echo "No RedHat update executables found!!"
   fi
-<% if defined?(@pkgtosvcrestart)  then -%>
+<% if @pkgtosvcrestart.length > 0  then -%>
   [[ "$REBOOT" == 'false' ]] && do_pkgtosvc_restart
 <% end %>
 }
