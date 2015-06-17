@@ -11,6 +11,7 @@ class systemupdates (
   $disable_os_methods = false,
   $pkgtosvcrestart    = undef,
   $custom_commands    = undef,
+  $pkgtosystemreboot  = [],
 ) inherits systemupdates::params {
   validate_string($day)
   validate_string($hour)
@@ -30,6 +31,7 @@ class systemupdates (
   if $custom_commands {
     validate_array($custom_commands)
   }
+  validate_array($pkgtosystemreboot)
 
   anchor { '::systemupdates::begin': } ->
   class { '::systemupdates::disable_os_methods': } ->

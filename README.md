@@ -125,6 +125,14 @@ Site specific commands which should be run during the upgrade process. See Hiera
 
 Default: undef
 
+###`pkgtosystemreboot`
+
+Array of site specific packages which should trigger a system reboot. Currently only supports rpm systems.
+
+**NOTE** Only supports RPM-based systems, and keys off current date. Will reboot every time run during matching day.
+
+Defaults: empty
+
 # Other
 
 Please feel free to submit pull requests or file bugs/feature requests. I developed this

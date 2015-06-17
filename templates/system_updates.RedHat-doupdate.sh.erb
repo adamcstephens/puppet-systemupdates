@@ -3,7 +3,6 @@ do_update() {
   then
     execute_task yum $YUMARGS clean expire-cache
     execute_task yum $YUMARGS update yum
-    execute_task yum $YUMARGS update glibc
     execute_task yum $YUMARGS update
 <% if defined?(@custom_commands)  then -%>
 <% @custom_commands.each do |cmd| -%>

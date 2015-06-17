@@ -1,3 +1,15 @@
+check_upgraded_package() {
+  package=$1
+  # check today for a change to the requested package
+  rpm -qa --queryformat '%{installtime}(%{installtime:date}) %{name}\n' $package | grep -q "$(date +"%d %b %Y")"
+  retval=$?
+  if [ $retval -eq 0 ]
+  then
+    echo "Found new package: $(rpm -qa $package | sort | head -n1)"
+  fi
+  return $retval
+}
+
 check_reboot() {
   if rpm -q kernel > /dev/null
   then
@@ -36,6 +48,10 @@ check_reboot() {
       fi
     fi
   done
+
+<% @pkgtosystemreboot.each do | pkg | -%>
+  check_upgraded_package <%= pkg %> && doreboot=true
+<% end -%>
 
   if $doreboot
   then
