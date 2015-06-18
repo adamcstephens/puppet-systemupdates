@@ -117,6 +117,8 @@ Default: false
 
 Package to service mapping which will automatically restart services if package is upgraded. See Hiera example above.
 
+**NOTE** Keys off current date. Will restart services every time run during matching day.
+
 Default: undef
 
 ###`custom_commands`
