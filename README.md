@@ -53,6 +53,9 @@ systemupdates::custom_commands:
   - 'apt-get -y $APTARGS dist-upgrade puppet'
   - 'apt-get -y $APTARGS -f install'
   - 'apt-get -y $APTARGS autoremove'
+systemupdates::pkgtosystemreboot:
+  - glibc
+  - openssl
 ```
 
 # Reference
