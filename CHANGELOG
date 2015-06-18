@@ -1,3 +1,8 @@
+2015-06-18 - 0.4.0
+
+* Add pkgtosystemreboot array for mapping services to system reboots
+* Add custom_pre_commands array to allow executing commands before patching
+
 2014-11-19 - 0.3.1
 
 * Bug: older bash doesn't support &> redirection
