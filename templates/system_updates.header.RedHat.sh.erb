@@ -4,10 +4,6 @@ then
 else
   YUMARGS="-y -d 0 -e 0"
 fi
-<% EX='' -%>
-<% if @excludes -%>
-<% @exclude.each do |ex| -%>
-<% EX << " -x #{ex}" -%>
-<% end -%>
-YUMARGS="${YUMARGS} <%= EX %>
+<% if @exclude -%>
+YUMARGS="${YUMARGS} <%= @exclude.map{ |x| "-x " + x }.join(' ') %>"
 <% end -%>
