@@ -44,6 +44,9 @@ single quotes if referencing the shell script variables
 ```
 systemupdates::use_crontab: false
 systemupdates::use_anacron: 'daily'
+systemupdates::exclude:
+  - 'kernel*'
+  - 'glibc*'
 systemupdates::pkgtosvcrestart:
   jre:
     - elasticsearch
@@ -79,6 +82,12 @@ Default: false
 Wether to automatically reboot, if necessary, after completion of upgrade.
 
 Default: false
+
+###`exclude`
+
+An optional array of packages to exclude from the update process.
+
+Default: undef
 
 ###`day`
 

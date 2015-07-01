@@ -3,6 +3,7 @@ class systemupdates (
   $day                 = $::systemupdates::params::day,
   $hour                = $::systemupdates::params::hour,
   $minute              = $::systemupdates::params::minute,
+  $exclude             = $::systemupdates::params::exclude,
   $auto_reboot         = $::systemupdates::params::auto_reboot,
   $use_crontab         = $::systemupdates::params::use_crontab,
   $use_anacron         = $::systemupdates::params::use_anacron,
@@ -19,6 +20,9 @@ class systemupdates (
   validate_string($minute)
   validate_bool($auto_reboot)
   validate_bool($use_crontab)
+  if $exclude {
+    validate_array($exclude)
+  }
   if $use_anacron != false {
     validate_re($use_anacron, '^(hourly|daily|weekly|monthly)$',
       "${use_anacron} must be one of hourly, daily, weekly or monthly")

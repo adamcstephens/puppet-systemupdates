@@ -20,7 +20,7 @@ class systemupdates::script inherits systemupdates {
 
   concat::fragment { 'system_updates_header_OS':
     target => '/usr/local/sbin/system_update.sh',
-    source => "puppet:///modules/systemupdates/system_updates.header.${::osfamily}.sh",
+    source => template("systemupdates/system_updates.header.${::osfamily}.sh.erb"),
     order  => '10',
   }
 
