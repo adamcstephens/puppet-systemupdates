@@ -80,6 +80,14 @@ Wether to automatically reboot, if necessary, after completion of upgrade.
 
 Default: false
 
+###`exclude`
+
+An optional array of packages to exclude from the update process.
+
+**Note**: this only works on Red Hat and derivatives.  Debian-based systems will need to utilize [package pinning](https://wiki.debian.org/AptPreferences), which is not managed by this module.
+
+Default: undef
+
 ###`day`
 
 Day of the week for root crontab entry. See [cron type](https://docs.puppetlabs.com/references/latest/type.html#cron)

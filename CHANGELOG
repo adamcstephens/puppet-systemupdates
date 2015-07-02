@@ -1,3 +1,7 @@
+2015-07-01 - 0.4.1
+
+* Add exclude parameter, which accepts an array of package names (or globs) to exluce on yum-based systems.
+
 2015-06-18 - 0.4.0
 
 * Add pkgtosystemreboot array for mapping services to system reboots

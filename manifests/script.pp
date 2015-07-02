@@ -1,9 +1,9 @@
 # Create the script that does all the work
 class systemupdates::script inherits systemupdates {
   concat { '/usr/local/sbin/system_update.sh' :
-    mode    => '0550',
-    owner   => 'root',
-    group   => 'root',
+    mode  => '0550',
+    owner => 'root',
+    group => 'root',
   }
 
   concat::fragment { 'system_updates_header':
@@ -19,9 +19,9 @@ class systemupdates::script inherits systemupdates {
   }
 
   concat::fragment { 'system_updates_header_OS':
-    target => '/usr/local/sbin/system_update.sh',
-    source => "puppet:///modules/systemupdates/system_updates.header.${::osfamily}.sh",
-    order  => '10',
+    target  => '/usr/local/sbin/system_update.sh',
+    content => template("systemupdates/system_updates.header.${::osfamily}.sh.erb"),
+    order   => '10',
   }
 
   concat::fragment { 'system_updates_OS_checkreboot':
