@@ -51,9 +51,18 @@ check_reboot() {
 
 <% @pkgtosystemreboot.each do | pkg | -%>
   check_upgraded_package <%= pkg %> && doreboot=true
-<% end -%>
 
-  if $doreboot
+<% end -%>
+  if [[ "$doreboot" == 'true' ]]
+  then
+    return 0
+  else
+    return 1
+  fi
+}
+
+do_reboot() {
+  if check_reboot
   then
     echo "Rebooting."
     shutdown -r now

@@ -24,9 +24,9 @@ class systemupdates::script inherits systemupdates {
     order   => '10',
   }
 
-  concat::fragment { 'system_updates_OS_checkreboot':
+  concat::fragment { 'system_updates_OS_doreboot':
     target  => '/usr/local/sbin/system_update.sh',
-    content => template("systemupdates/system_updates.${::osfamily}-checkreboot.sh.erb"),
+    content => template("systemupdates/system_updates.${::osfamily}-doreboot.sh.erb"),
     order   => '20',
   }
 
