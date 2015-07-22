@@ -23,3 +23,7 @@ execute_task() {
   fi
 }
 
+log_and_output() {
+  echo "$(date +"%b %d %H:%M:%S") ${@}" >>$SYSTEM_UPDATE_LOG
+  echo "${@}"
+}
