@@ -1,4 +1,4 @@
-2015-07-23 - 0.4.2 - The "Doug" Release
+2015-07-23 - 0.4.3 - The "Doug" Release
 
 * Feature: Split check_reboot into check_reboot and do_reboot (RedHat)
 * Feature: Add more logging
