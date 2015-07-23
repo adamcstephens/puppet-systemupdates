@@ -1,3 +1,8 @@
+log_and_output() {
+  echo "$(date +"%b %d %H:%M:%S") ${@}" >>$SYSTEM_UPDATE_LOG
+  echo "${@}"
+}
+
 execute_task() {
   task=$@
   if [[ "$VERBOSE" != 'true' ]]
@@ -7,7 +12,7 @@ execute_task() {
     eval $@ >>$TEMPLOG 2>&1
     TASKSTATUS=$?
   else
-    echo "$(date +"%b %d %H:%M:%S") Executing Task: $@"
+    log_and_output "Executing Task: $@"
     eval $@
   fi
   if [[ "$VERBOSE" != 'true' ]]
@@ -23,7 +28,3 @@ execute_task() {
   fi
 }
 
-log_and_output() {
-  echo "$(date +"%b %d %H:%M:%S") ${@}" >>$SYSTEM_UPDATE_LOG
-  echo "${@}"
-}
