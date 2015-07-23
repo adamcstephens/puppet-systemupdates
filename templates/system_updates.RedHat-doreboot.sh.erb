@@ -5,7 +5,7 @@ check_upgraded_package() {
   retval=$?
   if [ $retval -eq 0 ]
   then
-    echo "Found new package: $(rpm -qa $package | sort | head -n1)"
+    log_and_output "Found new package: $(rpm -qa $package | sort | head -n1)"
   fi
   return $retval
 }
@@ -36,13 +36,13 @@ check_reboot() {
     then
       if [[ "$KERNMIN" -gt "$CURMIN" ]]
       then
-        echo "Kernel Update: $kern > $UNAME"
+        log_and_output "Kernel Update: $kern > $UNAME"
         doreboot=true
       elif [[ "$KERNMIN" -eq "$CURMIN" ]]
       then
         if [[ "$KERNSUB" -gt "$CURSUB" ]]
         then
-          echo "Kernel Update: $kern > $UNAME"
+          log_and_output "Kernel Update: $kern > $UNAME"
           doreboot=true
         fi
       fi
@@ -64,7 +64,7 @@ check_reboot() {
 do_reboot() {
   if check_reboot
   then
-    echo "Rebooting."
+    log_and_output "Rebooting system."
     shutdown -r now
 <% if @pkgtosvcrestart.length > 0  then -%>
   else
