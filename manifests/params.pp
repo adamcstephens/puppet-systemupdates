@@ -1,8 +1,9 @@
 # class OS params
 class systemupdates::params {
+  $_rand_minute   = fqdn_rand(59)
   $day            = 'Wed'
   $hour           = '4'
-  $minute         = "${fqdn_rand(59)}"
+  $minute         = "${_rand_minute}"
   $exclude        = undef
   $auto_reboot    = false
   $use_crontab    = true
