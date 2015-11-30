@@ -24,7 +24,7 @@
     }
   ],
   "name": "adamcstephens-systemupdates",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "author": "adamcstephens",
   "summary": "Manage automated system updates",
   "license": "Apache 2.0",
