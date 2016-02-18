@@ -87,7 +87,7 @@ validate_newer_kernel() {
       then
         return 0
       else
-        log_and_output "CPIO verification of initramfs for ${KERN} failed"
+        log_and_output "GZIP verification of initramfs for ${KERN} failed"
       fi
     elif file /boot/initramfs-$(rpm -q ${kernelpkg} | grep ${KERN} | awk -F${kernelpkg}\- '{print $NF}').img | grep cpio > /dev/null
     then
