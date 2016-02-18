@@ -10,7 +10,7 @@ check_upgraded_package() {
   return $retval
 }
 
-check_reboot() {
+check_newer_kernel() {
   if rpm -q kernel > /dev/null
   then
     kernelpkg="kernel"
@@ -18,36 +18,114 @@ check_reboot() {
   then
     kernelpkg="kernel-PAE"
   fi
+
   UNAME=`uname -r | awk -F\- '{print $2}' | sed 's/EL//g;s/el5//g;s/smp//g;s/PAE//g'`
   CURMAJ=`echo $UNAME | cut -f1 -d.`
   CURMIN=`echo $UNAME | cut -f2 -d.`
   CURSUB=`echo $UNAME | cut -f3 -d.`
-  doreboot=false
+
+  NEWESTMAJ=$CURMAJ
+  NEWESTMIN=$CURMIN
+  NEWESTSUB=$CURSUB
+  NEWESTKERN=''
+
   for kern in `rpm -q --queryformat="%{version}-%{release}\n" $kernelpkg | awk -F\- '{print $2}' | sed 's/EL//g;s/el5//g;s/smp//g;s/PAE//g'`
   do
     KERNMAJ=`echo $kern | cut -f1 -d.`
     KERNMIN=`echo $kern | cut -f2 -d.`
     KERNSUB=`echo $kern | cut -f3 -d.`
-    if [[ "$KERNMAJ" -gt "$CURMAJ" ]]
+
+    if [[ "$KERNMAJ" -gt "$NEWESTMAJ" ]]
     then
-      echo "Kernel Update: $kern > $UNAME"
-      doreboot=true
-    elif [[ "$KERNMAJ" -eq "$CURMAJ" ]]
+      NEWESTMAJ=$KERNMAJ
+      NEWESTMIN=$KERNMIN
+      NEWESTMIN=$KERNSUB
+      NEWESTKERN=$kern
+
+    elif [[ "$KERNMAJ" -eq "$NEWESTMAJ" ]]
     then
-      if [[ "$KERNMIN" -gt "$CURMIN" ]]
+      if [[ "$KERNMIN" -gt "$NEWESTMIN" ]]
       then
-        log_and_output "Kernel Update: $kern > $UNAME"
-        doreboot=true
-      elif [[ "$KERNMIN" -eq "$CURMIN" ]]
+        NEWESTMAJ=$KERNMAJ
+        NEWESTMIN=$KERNMIN
+        NEWESTMIN=$KERNSUB
+        NEWESTKERN=$kern
+
+      elif [[ "$KERNMIN" -eq "$NEWESTMIN" ]]
       then
-        if [[ "$KERNSUB" -gt "$CURSUB" ]]
+        if [[ "$KERNSUB" -gt "$NEWESTSUB" ]]
         then
-          log_and_output "Kernel Update: $kern > $UNAME"
-          doreboot=true
+          NEWESTMAJ=$KERNMAJ
+          NEWESTMIN=$KERNMIN
+          NEWESTMIN=$KERNSUB
+          NEWESTKERN=$kern
+
         fi
       fi
     fi
   done
+
+  echo "${NEWESTKERN}"
+}
+
+validate_newer_kernel() {
+  if rpm -q kernel > /dev/null
+  then
+    kernelpkg="kernel"
+  elif rpm -q kernel-PAE > /dev/null
+  then
+    kernelpkg="kernel-PAE"
+  fi
+
+  KERN=$@
+
+  if rpm -V `rpm -q kernel | grep ${KERN}` > /dev/null
+  then
+    if file /boot/initramfs-$(rpm -q ${kernelpkg} | grep ${KERN} | awk -F${kernelpkg}\- '{print $NF}').img | grep gzip > /dev/null
+    then
+      if gzip -c -d /boot/initramfs-$(rpm -q ${kernelpkg} | grep ${KERN} | awk -F${kernelpkg}\- '{print $NF}').img > /dev/null
+      then
+        return 0
+      else
+        log_and_output "CPIO verification of initramfs for ${KERN} failed"
+      fi
+    elif file /boot/initramfs-$(rpm -q ${kernelpkg} | grep ${KERN} | awk -F${kernelpkg}\- '{print $NF}').img | grep cpio > /dev/null
+    then
+      if cpio -i --only-verify-crc --file=/boot/initramfs-$(rpm -q ${kernelpkg} | grep ${KERN} | awk -F${kernelpkg}\- '{print $NF}').img 2>&1 > /dev/null
+      then
+        return 0
+      else
+        log_and_output "CPIO verification of initramfs for ${KERN} failed"
+      fi
+    else
+      log_and_output "Unable to determine file type of initramfs for ${KERN}"
+      return 1
+    fi
+  else
+    log_and_output "RPM validation of ${KERN} failed"
+    return 1
+  fi
+}
+
+check_reboot() {
+  doreboot=false
+  
+  NEWESTKERN=$(check_newer_kernel)
+
+  if [ $NEWESTKERN ]
+  then 
+    validate_newer_kernel $NEWESTKERN && doreboot=true
+
+    if [ "$doreboot" == "true" ]
+    then
+      log_and_output "Validated new kernel ${NEWESTKERN}"
+      doreboot=true
+    else
+      # Bag things happened, bail
+      log_and_output "Error validating new kernel ${NEWESTKERN}"
+      return 1
+    fi
+  fi
 
 <% @pkgtosystemreboot.each do | pkg | -%>
   check_upgraded_package <%= pkg %> && doreboot=true
@@ -72,4 +150,3 @@ do_reboot() {
 <% end -%>
   fi
 }
-
