@@ -19,7 +19,8 @@ class systemupdates (
   validate_string($hour)
   validate_string($minute)
   validate_bool($auto_reboot)
-  validate_bool($use_crontab)
+  $_use_crontab = str2bool($use_crontab)
+  validate_bool($_use_crontab)
   if $exclude {
     validate_array($exclude)
   }
