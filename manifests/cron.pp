@@ -1,6 +1,7 @@
 # cron management
 class systemupdates::cron inherits systemupdates {
-  if $use_crontab == true {
+  $_use_crontab = str2bool($use_crontab)
+  if $_use_crontab == true {
     $cron_ensure = 'present'
   } else {
     $cron_ensure = 'absent'
