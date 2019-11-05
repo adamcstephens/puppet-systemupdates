@@ -7,6 +7,7 @@ do_update() {
     execute_task yum $YUMARGS clean expire-cache
     execute_task yum $YUMARGS update yum
     execute_task yum $YUMARGS update
+    execute_task yum clean all
 <% @custom_commands.each do |cmd| -%>
     execute_task <%= cmd %>
 <% end -%>
