@@ -9,6 +9,7 @@ do_update() {
     execute_task apt-get $APTARGS update
     execute_task apt-get -y $APTARGS upgrade
     execute_task apt-get -y $APTARGS dist-upgrade
+    execute_task apt-get clean
 <% if defined?(@custom_commands)  then -%>
 <% @custom_commands.each do |cmd| -%>
     execute_task <%= cmd %>
